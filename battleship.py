@@ -68,7 +68,10 @@ class Board:
     def guess(self, row, column):
         row_name = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
         column_name = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9}
-        if self.board[row_name[row]][column_name[column]] == 'O':
+        if self.board[row_name[row]][column_name[column]] == '-' or \
+                self.board[row_name[row]][column_name[column]] == 'X':
+            print('You already took that shot')
+        elif self.board[row_name[row]][column_name[column]] == 'O':
             print('You missed')
             self.board[row_name[row]][column_name[column]] = '-'
         elif self.board[row_name[row]][column_name[column]] == 'Z':
@@ -129,7 +132,6 @@ class Game:
                 column = random.randint(0, 9)
                 direction = random.choice(['vertical', 'horizontal'])
                 result = self.board.place_battleship(battleship_size, row, column, direction)
-        # self.board.print_board()
 
     def play_game(self):
         win = False
