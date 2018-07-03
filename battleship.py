@@ -139,9 +139,9 @@ class Game:
             self.board.print_board()
             guess_row = ''
             while guess_row == '' or guess_row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
-                guess_row = input('Guess row: ')
+                guess_row = input('Guess row: ').upper()
                 if guess_row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
-                    print("Please make sure to use uppercase letter between A to J")
+                    print("Please make sure to use letter between A to J")
             guess_column = 11
             while guess_column > 10:
                 try:
