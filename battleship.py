@@ -86,6 +86,8 @@ class Board:
                 self.sunk_battleship_counter += 1
         if self.sunk_battleship_counter == 7:
             print('Victory!!!')
+            self.print_board()
+            print('GAME OVER')
             return True
 
     def check_up(self, row, column):
@@ -132,11 +134,14 @@ class Game:
                 column = random.randint(0, 9)
                 direction = random.choice(['vertical', 'horizontal'])
                 result = self.board.place_battleship(battleship_size, row, column, direction)
+        self.rounds = 0
 
     def play_game(self):
         win = False
         while not win:
             self.board.print_board()
+            self.rounds += 1
+            print('Round number {}'.format(self.rounds))
             guess_row = ''
             while guess_row == '' or guess_row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
                 guess_row = input('Guess row: ').upper()
