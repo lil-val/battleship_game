@@ -1,4 +1,6 @@
 import random
+import csv
+from datetime import datetime
 
 
 class Board:
@@ -135,6 +137,8 @@ class Game:
                 direction = random.choice(['vertical', 'horizontal'])
                 result = self.board.place_battleship(battleship_size, row, column, direction)
         self.rounds = 0
+        self.name = input('Enter you name: ')
+        self.high_scores = []
 
     def play_game(self):
         win = False
@@ -159,6 +163,42 @@ class Game:
                     guess_column = 11
             if self.board.guess(guess_row, guess_column):
                 win = True
+        self.is_high_score(self.rounds)
+
+    def create_high_scores_file(self, sorted_high_scores):
+        with open('high_scores.csv', 'w', newline='') as high_scores_file:
+            writer = csv.DictWriter(high_scores_file, fieldnames=['name', 'score', 'timestamp'], dialect='excel')
+            writer.writeheader()
+            for sorted_high_score in sorted_high_scores:
+                writer.writerow(
+                    {'name': sorted_high_score['name'], 'score': sorted_high_score['score'],
+                     'timestamp': sorted_high_score['timestamp']})
+
+    def get_high_scores(self, file_name='high_scores.csv'):
+        try:
+            with open(file_name, 'r', newline='') as high_scores_file:
+                next(high_scores_file)
+                reader = csv.DictReader(high_scores_file, fieldnames=['name', 'score', 'timestamp'], dialect='excel')
+                for line in reader:
+                    self.high_scores.append(line)
+        except IOError:
+            pass
+
+    def is_high_score(self, rounds):
+        self.get_high_scores()
+        if len(self.high_scores) < 3:
+            self.high_scores.append({'name': self.name, 'score': rounds,
+                                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+        else:
+            for score in self.high_scores:
+                if rounds < int(score['score']):
+                    self.high_scores.append(
+                        {'name': self.name, 'score': rounds, 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+                    break
+        sorted_scores = sorted(self.high_scores, key=lambda k: int(k['score']))
+        for high_score in sorted_scores[:3]:
+            print('***Name: {} *** Score: {} ***'.format(high_score['name'], high_score['score']))
+        self.create_high_scores_file(sorted_scores[:3])
 
 
 if __name__ == '__main__':
