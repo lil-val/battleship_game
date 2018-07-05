@@ -1,6 +1,4 @@
 import random
-# import csv
-# from datetime import datetime
 from battleship_boards import Board
 
 
@@ -11,9 +9,7 @@ class Game:
         self.battleships_size = [5, 4, 3, 2, 2, 1, 1]
         self.allocate_computer_battleships()
         self.allocate_user_battleships()
-        # self.rounds = 0
-        # self.name = input('Enter you name: ')
-        # self.high_scores = []
+        self.win = False
 
     def allocate_computer_battleships(self):
         for battleship_size in self.battleships_size:
@@ -60,15 +56,19 @@ class Game:
                     elif instruction == 'V':
                         direction = 'vertical'
                 result = self.user_board.place_battleship(battleship_size, row_name, column_name, direction)
+                if not result:
+                    print('This battleship cannot be placed here, try a different location')
 
     def play_game(self):
-        win = False
-        while not win:
-            self.computer_board.print_board()
+        while not self.win:
+            self.computer_board.print_computer_board()
+            self.user_turn()
+            self.computer_turn()
             self.user_board.print_user_board()
-            # self.user_board.print_board()
-            # self.rounds += 1
-            # print('Round number {}'.format(self.rounds))
+
+    def user_turn(self):
+        turn_ended = False
+        while not turn_ended:
             guess_row = ''
             while guess_row == '' or guess_row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
                 guess_row = input('Guess row: ').upper()
@@ -84,44 +84,17 @@ class Game:
                 except ValueError:
                     print("Please make sure to enter a digit!")
                     guess_column = 11
-            if self.computer_board.guess(guess_row, guess_column):
-                win = True
-        # self.is_high_score(self.rounds)
+            guess_result = self.computer_board.guess(guess_row, guess_column)
+            if guess_result == 2:
+                turn_ended = True
+            elif guess_result == 3:
+                self.computer_board.print_computer_board()
+            elif guess_result == 4:
+                turn_ended = True
+                self.win = True
 
-    # def create_high_scores_file(self, sorted_high_scores):
-    #     with open('high_scores.csv', 'w', newline='') as high_scores_file:
-    #         writer = csv.DictWriter(high_scores_file, fieldnames=['name', 'score', 'timestamp'], dialect='excel')
-    #         writer.writeheader()
-    #         for sorted_high_score in sorted_high_scores:
-    #             writer.writerow(
-    #                 {'name': sorted_high_score['name'], 'score': sorted_high_score['score'],
-    #                  'timestamp': sorted_high_score['timestamp']})
-
-    # def get_high_scores(self, file_name='high_scores.csv'):
-    #     try:
-    #         with open(file_name, 'r', newline='') as high_scores_file:
-    #             next(high_scores_file)
-    #             reader = csv.DictReader(high_scores_file, fieldnames=['name', 'score', 'timestamp'], dialect='excel')
-    #             for line in reader:
-    #                 self.high_scores.append(line)
-    #     except IOError:
-    #         pass
-
-    # def is_high_score(self, rounds):
-    #     self.get_high_scores()
-    #     if len(self.high_scores) < 3:
-    #         self.high_scores.append({'name': self.name, 'score': rounds,
-    #                                  'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
-    #     else:
-    #         for score in self.high_scores:
-    #             if rounds < int(score['score']):
-    #                 self.high_scores.append(
-    #                     {'name': self.name, 'score': rounds, 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
-    #                 break
-    #     sorted_scores = sorted(self.high_scores, key=lambda k: int(k['score']))
-    #     for high_score in sorted_scores[:3]:
-    #         print('***Name: {} *** Score: {} ***'.format(high_score['name'], high_score['score']))
-    #     self.create_high_scores_file(sorted_scores[:3])
+    def computer_turn(self):
+        pass
 
 
 if __name__ == '__main__':

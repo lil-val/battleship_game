@@ -7,7 +7,7 @@ class Board:
         self.sunk_battleship_by_user_counter = 0
         self.sunk_battleship_by_computer_counter = 0
 
-    def print_board(self):
+    def print_computer_board(self):
         print('Computer Board')
         header = []
         for i in range(11):
@@ -87,9 +87,11 @@ class Board:
         if self.board[row_name[row]][column_name[column]] == '-' or \
                 self.board[row_name[row]][column_name[column]] == 'X':
             print('You already took that shot')
+            return 1
         elif self.board[row_name[row]][column_name[column]] == 'O':
             print('You missed')
             self.board[row_name[row]][column_name[column]] = '-'
+            return 2
         elif self.board[row_name[row]][column_name[column]] == 'Z':
             print('You hit')
             self.board[row_name[row]][column_name[column]] = 'X'
@@ -100,16 +102,18 @@ class Board:
             if up and down and left and right:
                 print('You sunk my battleship!')
                 self.sunk_battleship_by_user_counter += 1
+                return 3
+            return 3
         if self.sunk_battleship_by_user_counter == 7:
             print('You win!!!')
-            self.print_board()
+            self.print_user_board()
             print('GAME OVER')
-            return True
-        elif self.sunk_battleship_by_computer_counter == 7:  # adding computer counter
+            return 4
+        elif self.sunk_battleship_by_computer_counter == 7:
             print('Computer wins!!!')
-            self.print_board()
+            self.print_computer_board()
             print('GAME OVER')
-            return True
+            return 4
 
     def check_up(self, row, column):
         if row == 0 or self.board[row - 1][column] == 'O' or self.board[row - 1][column] == '-':
