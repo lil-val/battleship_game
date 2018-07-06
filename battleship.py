@@ -21,6 +21,7 @@ class Game:
                 result = self.computer_board.place_battleship(battleship_size, row, column, direction)
 
     def allocate_user_battleships(self):
+        print("******* Locate you battleships *******")
         for battleship_size in self.battleships_size:
             result = False
             while not result:
@@ -60,11 +61,13 @@ class Game:
                     print('This battleship cannot be placed here, try a different location')
 
     def play_game(self):
+        print("******* Start guessing *******")
         while not self.win:
             self.computer_board.print_computer_board()
             self.user_turn()
-            self.computer_turn()
-            self.user_board.print_user_board()
+            if not self.win:
+                self.computer_turn()
+                self.user_board.print_user_board()
 
     def user_turn(self):
         turn_ended = False
@@ -85,11 +88,18 @@ class Game:
                     print("Please make sure to enter a digit!")
                     guess_column = 11
             guess_result = self.computer_board.guess(guess_row, guess_column)
-            if guess_result == 2:
+            if guess_result == 1:
+                print('You already took that shot')
+            elif guess_result == 2:
+                print('You missed')
                 turn_ended = True
             elif guess_result == 3:
+                print('You hit')
                 self.computer_board.print_computer_board()
             elif guess_result == 4:
+                print('You sunk my battleship!')
+                self.computer_board.print_computer_board()
+            elif guess_result == 5:
                 turn_ended = True
                 self.win = True
 

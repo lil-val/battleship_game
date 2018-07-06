@@ -86,34 +86,30 @@ class Board:
         column_name = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9}
         if self.board[row_name[row]][column_name[column]] == '-' or \
                 self.board[row_name[row]][column_name[column]] == 'X':
-            print('You already took that shot')
             return 1
         elif self.board[row_name[row]][column_name[column]] == 'O':
-            print('You missed')
             self.board[row_name[row]][column_name[column]] = '-'
             return 2
         elif self.board[row_name[row]][column_name[column]] == 'Z':
-            print('You hit')
             self.board[row_name[row]][column_name[column]] = 'X'
             up = self.check_up(row_name[row], column_name[column])
             down = self.check_down(row_name[row], column_name[column])
             left = self.check_left(row_name[row], column_name[column])
             right = self.check_right(row_name[row], column_name[column])
             if up and down and left and right:
-                print('You sunk my battleship!')
                 self.sunk_battleship_by_user_counter += 1
-                return 3
+                if self.sunk_battleship_by_user_counter == 7:
+                    print('You win!!!')
+                    self.print_computer_board()
+                    print('GAME OVER')
+                    return 5
+                elif self.sunk_battleship_by_computer_counter == 7:
+                    print('Computer wins!!!')
+                    self.print_user_board()
+                    print('GAME OVER')
+                    return 5
+                return 4
             return 3
-        if self.sunk_battleship_by_user_counter == 7:
-            print('You win!!!')
-            self.print_user_board()
-            print('GAME OVER')
-            return 4
-        elif self.sunk_battleship_by_computer_counter == 7:
-            print('Computer wins!!!')
-            self.print_computer_board()
-            print('GAME OVER')
-            return 4
 
     def check_up(self, row, column):
         if row == 0 or self.board[row - 1][column] == 'O' or self.board[row - 1][column] == '-':
