@@ -11,5 +11,5 @@ Two versions of battleship game:
 * User and computer try to hit and sunk the battleships by guessing row and column
 * The first one to sunk all battelships is the winner
 
-### Requirements:
+## Requirements:
 python 3.6
