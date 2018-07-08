@@ -10,6 +10,19 @@ class Game:
         self.allocate_computer_battleships()
         self.allocate_user_battleships()
         self.win = False
+        self.optional_guesses = {'A': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'B': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'C': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'D': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'E': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'F': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'G': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'H': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'I': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'J': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+        # self.waiting_list = []
+        # self.computer_guessed_row = ''
+        # self.computer_guessed_column = 0
 
     def allocate_computer_battleships(self):
         for battleship_size in self.battleships_size:
@@ -104,7 +117,32 @@ class Game:
                 self.win = True
 
     def computer_turn(self):
-        pass
+        turn_ended = False
+        while not turn_ended:
+            print(self.optional_guesses)  # to delete
+            guess_row = random.choice(list(self.optional_guesses.keys()))
+            guess_column = random.choice(self.optional_guesses[guess_row])
+            guess_result = self.user_board.guess(guess_row, guess_column)
+            if guess_result == 1:  # You already took that shot
+                pass
+            if guess_result == 2:  # missed
+                self.optional_guesses[guess_row].remove(guess_column)
+                if len(self.optional_guesses[guess_row]) == 0:
+                    del self.optional_guesses[guess_row]
+                turn_ended = True
+            elif guess_result == 3:  # hit
+                self.optional_guesses[guess_row].remove(guess_column)
+                if len(self.optional_guesses[guess_row]) == 0:
+                    del self.optional_guesses[guess_row]
+                # self.computer_guessed_row = guess_row
+                # self.computer_guessed_column = guess_column
+            elif guess_result == 4:  # sunk battleship
+                self.optional_guesses[guess_row].remove(guess_column)
+                if len(self.optional_guesses[guess_row]) == 0:
+                    del self.optional_guesses[guess_row]
+            elif guess_result == 5:
+                turn_ended = True
+                self.win = True
 
 
 if __name__ == '__main__':
