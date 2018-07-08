@@ -1,9 +1,9 @@
 class Board:
     def __init__(self):
-        self.board = []
-        for i in range(10):
-            row = ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
-            self.board.append(row)
+        self.board = [['O' for col in range(10)] for row in range(10)]
+        # for i in range(10):
+        #     row = ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
+        #     self.board.append(row)
         self.sunk_battleship_by_user_counter = 0
         self.sunk_battleship_by_computer_counter = 0
 
