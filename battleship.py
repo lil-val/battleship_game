@@ -121,9 +121,6 @@ class Game:
                 else:
                     print('You sunk my battleship!')
                     self.computer_board.print_computer_board()
-            # elif guess_result == 5:  # change according to board change
-            #     turn_ended = True
-            #     self.win = True
 
     def computer_turn(self):
         turn_ended = False
@@ -165,6 +162,7 @@ class Game:
                         self.waiting_list.append([chr(ord(guess_row) + 1), guess_column, 'V'])
                 print(self.waiting_list)  # to delete
             elif guess_result == 4:  # sunk battleship
+                self.current_battleship.append([guess_row, guess_column])
                 self.sunk_battleship_by_computer_counter += 1
                 if self.sunk_battleship_by_computer_counter == 7:
                     self.user_board.print_user_board()
@@ -172,11 +170,22 @@ class Game:
                     turn_ended = True
                     self.win = True
                 self.waiting_list = []
-                # TODO: remove all surrounding waters
+                for position in self.current_battleship:
+                    self.surrounding_waters(position[0], position[1])
                 self.current_battleship = []
-            # elif guess_result == 5:
-            #     turn_ended = True
-            #     self.win = True
+
+    def surrounding_waters(self, row, column):
+        rows_to_check = [chr(ord(row) - 1), chr(ord(row)), chr(ord(row) + 1)]
+        for row_to_check in rows_to_check:
+            if row_to_check in self.optional_guesses:
+                if (column - 1) in self.optional_guesses[row_to_check]:
+                    self.optional_guesses[row_to_check].remove(column - 1)
+                if column in self.optional_guesses[row_to_check]:
+                    self.optional_guesses[row_to_check].remove(column)
+                if (column + 1) in self.optional_guesses[row_to_check]:
+                    self.optional_guesses[row_to_check].remove(column + 1)
+                if len(self.optional_guesses[row_to_check]) == 0:
+                    del self.optional_guesses[row_to_check]
 
 
 if __name__ == '__main__':
