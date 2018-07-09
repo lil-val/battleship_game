@@ -1,11 +1,8 @@
 class Board:
     def __init__(self):
         self.board = [['O' for col in range(10)] for row in range(10)]
-        # for i in range(10):
-        #     row = ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
-        #     self.board.append(row)
-        self.sunk_battleship_by_user_counter = 0
-        self.sunk_battleship_by_computer_counter = 0
+        # self.sunk_battleship_by_user_counter = 0
+        # self.sunk_battleship_by_computer_counter = 0
 
     def print_computer_board(self):
         print('Computer Board')
@@ -33,13 +30,13 @@ class Board:
         row_name = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
         for i in range(10):
             row = self.board[i]
-            display_row = []
-            for element in row:
-                if element == 'Z':
-                    display_row.append('Z')
-                else:
-                    display_row.append(element)
-            print(row_name[i] + ' ' + ' '.join(display_row))
+            # display_row = []
+            # for element in row:
+            #     if element == 'Z':
+            #         display_row.append('Z')
+            #     else:
+            #         display_row.append(element)
+            print(row_name[i] + ' ' + ' '.join(row))
 
     def place_battleship(self, battleship_size, row, column, direction):
         if direction == 'vertical':
@@ -97,17 +94,17 @@ class Board:
             left = self.check_left(row_name[row], column_name[column])
             right = self.check_right(row_name[row], column_name[column])
             if up and down and left and right:
-                self.sunk_battleship_by_user_counter += 1
-                if self.sunk_battleship_by_user_counter == 7:
-                    print('You win!!!')
-                    self.print_computer_board()
-                    print('GAME OVER')
-                    return 5
-                elif self.sunk_battleship_by_computer_counter == 7:
-                    print('Computer wins!!!')
-                    self.print_user_board()
-                    print('GAME OVER')
-                    return 5
+                # self.sunk_battleship_by_user_counter += 1
+                # if self.sunk_battleship_by_user_counter == 7:
+                #     print('You win!!!')
+                #     self.print_computer_board()
+                #     print('GAME OVER')
+                #     return 5
+                # elif self.sunk_battleship_by_computer_counter == 7:
+                #     print('Computer wins!!!')
+                #     self.print_user_board()
+                #     print('GAME OVER')
+                #     return 5
                 return 4
             return 3
 

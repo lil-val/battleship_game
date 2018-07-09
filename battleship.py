@@ -20,9 +20,10 @@ class Game:
                                  'H': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                                  'I': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                                  'J': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-        # self.waiting_list = []
-        # self.computer_guessed_row = ''
-        # self.computer_guessed_column = 0
+        self.waiting_list = []
+        self.current_battleship = []
+        self.sunk_battleship_by_user_counter = 0
+        self.sunk_battleship_by_computer_counter = 0
 
     def allocate_computer_battleships(self):
         for battleship_size in self.battleships_size:
@@ -110,39 +111,63 @@ class Game:
                 print('You hit')
                 self.computer_board.print_computer_board()
             elif guess_result == 4:
-                print('You sunk my battleship!')
-                self.computer_board.print_computer_board()
-            elif guess_result == 5:
-                turn_ended = True
-                self.win = True
+                self.sunk_battleship_by_user_counter += 1
+                if self.sunk_battleship_by_user_counter == 7:
+                    self.computer_board.print_computer_board()
+                    print('You win!!!')
+                    turn_ended = True
+                    self.win = True
+                else:
+                    print('You sunk my battleship!')
+                    self.computer_board.print_computer_board()
+            # elif guess_result == 5:  # change according to board change
+            #     turn_ended = True
+            #     self.win = True
 
     def computer_turn(self):
         turn_ended = False
         while not turn_ended:
             print(self.optional_guesses)  # to delete
-            guess_row = random.choice(list(self.optional_guesses.keys()))
-            guess_column = random.choice(self.optional_guesses[guess_row])
+            guess_direction = 'N'
+            if len(self.waiting_list) == 0:
+                guess_row = random.choice(list(self.optional_guesses.keys()))
+                guess_column = random.choice(self.optional_guesses[guess_row])
+            else:
+                guess_row = self.waiting_list[0][0]
+                guess_column = self.waiting_list[0][1]
+                guess_direction = self.waiting_list[0][2]
+                del self.waiting_list[0]
             guess_result = self.user_board.guess(guess_row, guess_column)
+            self.optional_guesses[guess_row].remove(guess_column)
+            if len(self.optional_guesses[guess_row]) == 0:
+                del self.optional_guesses[guess_row]
             if guess_result == 1:  # You already took that shot
-                pass
-            if guess_result == 2:  # missed
-                self.optional_guesses[guess_row].remove(guess_column)
-                if len(self.optional_guesses[guess_row]) == 0:
-                    del self.optional_guesses[guess_row]
+                continue
+            elif guess_result == 2:  # missed
                 turn_ended = True
             elif guess_result == 3:  # hit
-                self.optional_guesses[guess_row].remove(guess_column)
-                if len(self.optional_guesses[guess_row]) == 0:
-                    del self.optional_guesses[guess_row]
-                # self.computer_guessed_row = guess_row
-                # self.computer_guessed_column = guess_column
+                self.current_battleship.append([guess_row, guess_column])
+                if guess_column != 1 and guess_direction != 'V':
+                    self.waiting_list.append([guess_row, guess_column - 1, 'H'])  # check if value in optional list before append (for all 4 options)
+                if guess_column != 10 and guess_direction != 'V':
+                    self.waiting_list.append([guess_row, guess_column + 1, 'H'])
+                if guess_row != 'A' and guess_direction != 'H':
+                    self.waiting_list.append([chr(ord(guess_row) - 1), guess_column, 'V'])
+                if guess_row != 'J' and guess_direction != 'H':
+                    self.waiting_list.append([chr(ord(guess_row) + 1), guess_column, 'V'])
             elif guess_result == 4:  # sunk battleship
-                self.optional_guesses[guess_row].remove(guess_column)
-                if len(self.optional_guesses[guess_row]) == 0:
-                    del self.optional_guesses[guess_row]
-            elif guess_result == 5:
-                turn_ended = True
-                self.win = True
+                self.sunk_battleship_by_computer_counter += 1
+                if self.sunk_battleship_by_computer_counter == 7:
+                    self.user_board.print_user_board()
+                    print('Computer win!!!')
+                    turn_ended = True
+                    self.win = True
+                self.waiting_list = []
+                # TODO: remove all surrounding waters
+                self.current_battleship = []
+            # elif guess_result == 5:
+            #     turn_ended = True
+            #     self.win = True
 
 
 if __name__ == '__main__':
