@@ -1,151 +1,93 @@
 import random
-import csv
-from datetime import datetime
-
-
-class Board:
-    def __init__(self):
-        self.board = []
-        for i in range(10):
-            row = ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
-            self.board.append(row)
-        self.sunk_battleship_counter = 0
-
-    def print_board(self):
-        header = []
-        for i in range(11):
-            header.append(str(i))
-        print(' '.join(header))
-        row_name = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-        for i in range(10):
-            row = self.board[i]
-            display_row = []
-            for element in row:
-                if element == 'Z':
-                    display_row.append('O')
-                else:
-                    display_row.append(element)
-            print(row_name[i] + ' ' + ' '.join(display_row))
-
-    def place_battleship(self, battleship_size, row, column, direction):
-        if direction == 'vertical':
-            current_row = row
-            for i in range(battleship_size):
-                if current_row < 10 and self.board[current_row][column] == 'O' \
-                        and (column == 0 or self.board[current_row][column - 1] == 'O')\
-                        and (column == 9 or self.board[current_row][column + 1] == 'O')\
-                        and (current_row == 0 or self.board[current_row - 1][column] == 'O') \
-                        and (current_row == 0 or column == 0 or self.board[current_row - 1][column - 1] == 'O') \
-                        and (current_row == 0 or column == 9 or self.board[current_row - 1][column + 1] == 'O') \
-                        and (current_row == 9 or self.board[current_row + 1][column] == 'O') \
-                        and (current_row == 9 or column == 0 or self.board[current_row + 1][column - 1] == 'O') \
-                        and (current_row == 9 or column == 9 or self.board[current_row + 1][column + 1] == 'O'):
-                    current_row += 1
-                else:
-                    return False
-            for i in range(battleship_size):
-                self.board[row][column] = 'Z'
-                row += 1
-            return True
-        if direction == 'horizontal':
-            current_column = column
-            for i in range(battleship_size):
-                if current_column < 10 and self.board[row][current_column] == 'O' \
-                        and (row == 0 or self.board[row - 1][current_column] == 'O') \
-                        and (row == 9 or self.board[row + 1][current_column] == 'O') \
-                        and (current_column == 0 or self.board[row][current_column - 1] == 'O') \
-                        and (current_column == 0 or row == 0 or self.board[row - 1][current_column - 1] == 'O') \
-                        and (current_column == 0 or row == 9 or self.board[row + 1][current_column - 1] == 'O') \
-                        and (current_column == 9 or self.board[row][current_column + 1] == 'O') \
-                        and (current_column == 9 or row == 0 or self.board[row - 1][current_column + 1] == 'O') \
-                        and (current_column == 9 or row == 9 or self.board[row + 1][current_column + 1] == 'O'):
-                    current_column += 1
-                else:
-                    return False
-            for i in range(battleship_size):
-                self.board[row][column] = 'Z'
-                column += 1
-            return True
-
-    def guess(self, row, column):
-        row_name = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
-        column_name = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9}
-        if self.board[row_name[row]][column_name[column]] == '-' or \
-                self.board[row_name[row]][column_name[column]] == 'X':
-            print('You already took that shot')
-        elif self.board[row_name[row]][column_name[column]] == 'O':
-            print('You missed')
-            self.board[row_name[row]][column_name[column]] = '-'
-        elif self.board[row_name[row]][column_name[column]] == 'Z':
-            print('You hit')
-            self.board[row_name[row]][column_name[column]] = 'X'
-            up = self.check_up(row_name[row], column_name[column])
-            down = self.check_down(row_name[row], column_name[column])
-            left = self.check_left(row_name[row], column_name[column])
-            right = self.check_right(row_name[row], column_name[column])
-            if up and down and left and right:
-                print('You sunk my battleship!')
-                self.sunk_battleship_counter += 1
-        if self.sunk_battleship_counter == 7:
-            print('Victory!!!')
-            self.print_board()
-            print('GAME OVER')
-            return True
-
-    def check_up(self, row, column):
-        if row == 0 or self.board[row - 1][column] == 'O' or self.board[row - 1][column] == '-':
-            return True
-        elif self.board[row - 1][column] == 'Z':
-            return False
-        elif self.board[row - 1][column] == 'X':
-            return self.check_up(row - 1, column)
-
-    def check_down(self, row, column):
-        if row == 9 or self.board[row + 1][column] == 'O' or self.board[row + 1][column] == '-':
-            return True
-        elif self.board[row + 1][column] == 'Z':
-            return False
-        elif self.board[row + 1][column] == 'X':
-            return self.check_down(row + 1, column)
-
-    def check_left(self, row, column):
-        if column == 0 or self.board[row][column - 1] == 'O' or self.board[row][column - 1] == '-':
-            return True
-        elif self.board[row][column - 1] == 'Z':
-            return False
-        elif self.board[row][column - 1] == 'X':
-            return self.check_left(row, column - 1)
-
-    def check_right(self, row, column):
-        if column == 9 or self.board[row][column + 1] == 'O' or self.board[row][column + 1] == '-':
-            return True
-        elif self.board[row][column + 1] == 'Z':
-            return False
-        elif self.board[row][column + 1] == 'X':
-            return self.check_right(row, column + 1)
+from battleship_boards import Board
 
 
 class Game:
     def __init__(self):
-        self.board = Board()
-        battleships_size = [5, 4, 3, 2, 2, 1, 1]
-        for battleship_size in battleships_size:
+        self.computer_board = Board()
+        self.user_board = Board()
+        self.battleships_size = [5, 4, 3, 2, 2, 1, 1]
+        self.allocate_computer_battleships()
+        self.allocate_user_battleships()
+        self.win = False
+        self.optional_guesses = {'A': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'B': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'C': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'D': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'E': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'F': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'G': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'H': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'I': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                 'J': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+        self.waiting_list = []
+        self.current_battleship = []
+        self.sunk_battleship_by_user_counter = 0
+        self.sunk_battleship_by_computer_counter = 0
+
+    def allocate_computer_battleships(self):
+        for battleship_size in self.battleships_size:
             result = False
             while not result:
                 row = random.randint(0, 9)
                 column = random.randint(0, 9)
                 direction = random.choice(['vertical', 'horizontal'])
-                result = self.board.place_battleship(battleship_size, row, column, direction)
-        self.rounds = 0
-        self.name = input('Enter you name: ')
-        self.high_scores = []
+                result = self.computer_board.place_battleship(battleship_size, row, column, direction)
+
+    def allocate_user_battleships(self):
+        print("******* Locate you battleships *******")
+        for battleship_size in self.battleships_size:
+            print('Select position for {} size battleship'.format(battleship_size))
+            result = False
+            while not result:
+                self.user_board.print_board(True)
+                row = ''
+                while row == '' or row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
+                    row = input('Enter row: ').upper()
+                    if row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
+                        print("Please make sure to use letter between A to J")
+                rows = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
+                row_name = rows[row]
+
+                column = 11
+                while column > 10:
+                    try:
+                        column = int(input('Guess column: '))
+                        if column > 10 or column < 1:
+                            print("Please make sure to use a digit between 1 to 10")
+                            column = 11
+                    except ValueError:
+                        print("Please make sure to enter a digit!")
+                        column = 11
+                columns = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9}
+                column_name = columns[column]
+
+                instruction = ''
+                while instruction == '' or instruction not in ['H', 'V']:
+                    instruction = input('Enter direction v (vertical) or h (horizontal): ').upper()
+                    if instruction not in ['H', 'V']:
+                        print("Please make sure to use only the letters v or h")
+                    if instruction == 'H':
+                        direction = 'horizontal'
+                    elif instruction == 'V':
+                        direction = 'vertical'
+                result = self.user_board.place_battleship(battleship_size, row_name, column_name, direction)
+                if not result:
+                    print('This battleship cannot be placed here, try a different location')
 
     def play_game(self):
-        win = False
-        while not win:
-            self.board.print_board()
-            self.rounds += 1
-            print('Round number {}'.format(self.rounds))
+        print("******* Start guessing *******")
+        while not self.win:
+            self.computer_board.print_board(False)
+            self.user_turn()
+            if not self.win:
+                self.computer_turn()
+                if not self.win:
+                    self.user_board.print_board(True)
+
+    def user_turn(self):
+        turn_ended = False
+        while not turn_ended:
             guess_row = ''
             while guess_row == '' or guess_row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
                 guess_row = input('Guess row: ').upper()
@@ -161,44 +103,106 @@ class Game:
                 except ValueError:
                     print("Please make sure to enter a digit!")
                     guess_column = 11
-            if self.board.guess(guess_row, guess_column):
-                win = True
-        self.is_high_score(self.rounds)
+            guess_result = self.computer_board.guess(guess_row, guess_column)
+            if guess_result == 1:
+                print('You already took that shot')
+            elif guess_result == 2:
+                print('You missed')
+                turn_ended = True
+            elif guess_result == 3:
+                print('You hit')
+                self.computer_board.print_board(False)
+            elif guess_result == 4:
+                self.sunk_battleship_by_user_counter += 1
+                if self.sunk_battleship_by_user_counter == 7:
+                    self.computer_board.print_board(False)
+                    self.you_win()
+                    turn_ended = True
+                    self.win = True
+                else:
+                    print('You sunk my battleship!')
+                    self.computer_board.print_board(False)
 
-    def create_high_scores_file(self, sorted_high_scores):
-        with open('high_scores.csv', 'w', newline='') as high_scores_file:
-            writer = csv.DictWriter(high_scores_file, fieldnames=['name', 'score', 'timestamp'], dialect='excel')
-            writer.writeheader()
-            for sorted_high_score in sorted_high_scores:
-                writer.writerow(
-                    {'name': sorted_high_score['name'], 'score': sorted_high_score['score'],
-                     'timestamp': sorted_high_score['timestamp']})
+    def computer_turn(self):
+        turn_ended = False
+        while not turn_ended:
+            guess_direction = 'N'
+            if len(self.waiting_list) == 0:
+                guess_row = random.choice(list(self.optional_guesses.keys()))
+                guess_column = random.choice(self.optional_guesses[guess_row])
+            else:
+                guess_row = self.waiting_list[0][0]
+                guess_column = self.waiting_list[0][1]
+                guess_direction = self.waiting_list[0][2]
+                del self.waiting_list[0]
+            guess_result = self.user_board.guess(guess_row, guess_column)
+            self.optional_guesses[guess_row].remove(guess_column)
+            if len(self.optional_guesses[guess_row]) == 0:
+                del self.optional_guesses[guess_row]
+            if guess_result == 1:  # You already took that shot
+                continue
+            elif guess_result == 2:  # missed
+                turn_ended = True
+            elif guess_result == 3:  # hit
+                self.current_battleship.append([guess_row, guess_column])
+                if guess_row in self.optional_guesses and (guess_column - 1) in self.optional_guesses[guess_row]:
+                    if guess_column != 1 and guess_direction != 'V':
+                        self.waiting_list.append([guess_row, guess_column - 1, 'H'])
+                if guess_row in self.optional_guesses and (guess_column + 1) in self.optional_guesses[guess_row]:
+                    if guess_column != 10 and guess_direction != 'V':
+                        self.waiting_list.append([guess_row, guess_column + 1, 'H'])
+                if chr(ord(guess_row) - 1) in self.optional_guesses and \
+                        guess_column in self.optional_guesses[chr(ord(guess_row) - 1)]:
+                    if guess_row != 'A' and guess_direction != 'H':
+                        self.waiting_list.append([chr(ord(guess_row) - 1), guess_column, 'V'])
+                if chr(ord(guess_row) + 1) in self.optional_guesses and \
+                        guess_column in self.optional_guesses[chr(ord(guess_row) + 1)]:
+                    if guess_row != 'J' and guess_direction != 'H':
+                        self.waiting_list.append([chr(ord(guess_row) + 1), guess_column, 'V'])
+            elif guess_result == 4:  # sunk battleship
+                self.current_battleship.append([guess_row, guess_column])
+                self.sunk_battleship_by_computer_counter += 1
+                if self.sunk_battleship_by_computer_counter == 7:
+                    self.user_board.print_board(True)
+                    self.computer_win()
+                    turn_ended = True
+                    self.win = True
+                else:
+                    self.waiting_list = []
+                    for position in self.current_battleship:
+                        self.surrounding_waters(position[0], position[1])
+                    self.current_battleship = []
 
-    def get_high_scores(self, file_name='high_scores.csv'):
-        try:
-            with open(file_name, 'r', newline='') as high_scores_file:
-                next(high_scores_file)
-                reader = csv.DictReader(high_scores_file, fieldnames=['name', 'score', 'timestamp'], dialect='excel')
-                for line in reader:
-                    self.high_scores.append(line)
-        except IOError:
-            pass
+    def surrounding_waters(self, row, column):
+        rows_to_check = [chr(ord(row) - 1), chr(ord(row)), chr(ord(row) + 1)]
+        for row_to_check in rows_to_check:
+            if row_to_check in self.optional_guesses:
+                if (column - 1) in self.optional_guesses[row_to_check]:
+                    self.optional_guesses[row_to_check].remove(column - 1)
+                if column in self.optional_guesses[row_to_check]:
+                    self.optional_guesses[row_to_check].remove(column)
+                if (column + 1) in self.optional_guesses[row_to_check]:
+                    self.optional_guesses[row_to_check].remove(column + 1)
+                if len(self.optional_guesses[row_to_check]) == 0:
+                    del self.optional_guesses[row_to_check]
 
-    def is_high_score(self, rounds):
-        self.get_high_scores()
-        if len(self.high_scores) < 3:
-            self.high_scores.append({'name': self.name, 'score': rounds,
-                                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
-        else:
-            for score in self.high_scores:
-                if rounds < int(score['score']):
-                    self.high_scores.append(
-                        {'name': self.name, 'score': rounds, 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
-                    break
-        sorted_scores = sorted(self.high_scores, key=lambda k: int(k['score']))
-        for high_score in sorted_scores[:3]:
-            print('***Name: {} *** Score: {} ***'.format(high_score['name'], high_score['score']))
-        self.create_high_scores_file(sorted_scores[:3])
+    def you_win(self):
+        print("__     __          __          ___       _ _ _ ")
+        print("\ \   / /          \ \        / (_)     | | | |")
+        print(" \ \_/ /__  _   _   \ \  /\  / / _ _ __ | | | |")
+        print("  \   / _ \| | | |   \ \/  \/ / | | '_ \| | | |")
+        print("   | | (_) | |_| |    \  /\  /  | | | | |_|_|_|")
+        print("   |_|\___/ \__,_|     \/  \/   |_|_| |_(_|_|_)")
+
+    def computer_win(self):
+        print("  _____                            _             __          ___       _ _ _ ")
+        print(" / ____|                          | |            \ \        / (_)     | | | |")
+        print("| |     ___  _ __ ___  _ __  _   _| |_ ___ _ __   \ \  /\  / / _ _ __ | | | |")
+        print("| |    / _ \| '_ ` _ \| '_ \| | | | __/ _ \ '__|   \ \/  \/ / | | '_ \| | | |")
+        print("| |___| (_) | | | | | | |_) | |_| | ||  __/ |       \  /\  /  | | | | |_|_|_|")
+        print(" \_____\___/|_| |_| |_| .__/ \__,_|\__\___|_|        \/  \/   |_|_| |_(_|_|_)")
+        print("                      | |                                                    ")
+        print("                      |_|                                                    ")
 
 
 if __name__ == '__main__':
