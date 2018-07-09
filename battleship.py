@@ -37,9 +37,10 @@ class Game:
     def allocate_user_battleships(self):
         print("******* Locate you battleships *******")
         for battleship_size in self.battleships_size:
+            print('Select position for {} size battleship'.format(battleship_size))
             result = False
             while not result:
-                self.user_board.print_user_board()
+                self.user_board.print_board(True)
                 row = ''
                 while row == '' or row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
                     row = input('Enter row: ').upper()
@@ -77,12 +78,12 @@ class Game:
     def play_game(self):
         print("******* Start guessing *******")
         while not self.win:
-            self.computer_board.print_computer_board()
+            self.computer_board.print_board(False)
             self.user_turn()
             if not self.win:
                 self.computer_turn()
                 if not self.win:
-                    self.user_board.print_user_board()
+                    self.user_board.print_board(True)
 
     def user_turn(self):
         turn_ended = False
@@ -110,17 +111,17 @@ class Game:
                 turn_ended = True
             elif guess_result == 3:
                 print('You hit')
-                self.computer_board.print_computer_board()
+                self.computer_board.print_board(False)
             elif guess_result == 4:
                 self.sunk_battleship_by_user_counter += 1
                 if self.sunk_battleship_by_user_counter == 7:
-                    self.computer_board.print_computer_board()
+                    self.computer_board.print_board(False)
                     self.you_win()
                     turn_ended = True
                     self.win = True
                 else:
                     print('You sunk my battleship!')
-                    self.computer_board.print_computer_board()
+                    self.computer_board.print_board(False)
 
     def computer_turn(self):
         turn_ended = False
@@ -162,7 +163,7 @@ class Game:
                 self.current_battleship.append([guess_row, guess_column])
                 self.sunk_battleship_by_computer_counter += 1
                 if self.sunk_battleship_by_computer_counter == 7:
-                    self.user_board.print_user_board()
+                    self.user_board.print_board(True)
                     self.computer_win()
                     turn_ended = True
                     self.win = True

@@ -2,8 +2,11 @@ class Board:
     def __init__(self):
         self.board = [['O' for col in range(10)] for row in range(10)]
 
-    def print_computer_board(self):  # TODO: merge with print_user_board
-        print('Computer Board')
+    def print_board(self, user):
+        if user:
+            print('User Board')
+        else:
+            print('Computer Board')
         header = []
         for i in range(11):
             header.append(str(i))
@@ -13,28 +16,11 @@ class Board:
             row = self.board[i]
             display_row = []
             for element in row:
-                if element == 'Z':
-                    display_row.append('Z')  # at the end change back to 'O'
+                if element == 'Z' and not user:
+                    display_row.append('O')
                 else:
                     display_row.append(element)
             print(row_name[i] + ' ' + ' '.join(display_row))
-
-    def print_user_board(self):
-        print('User Board')
-        header = []
-        for i in range(11):
-            header.append(str(i))
-        print(' '.join(header))
-        row_name = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-        for i in range(10):
-            row = self.board[i]
-            # display_row = []
-            # for element in row:
-            #     if element == 'Z':
-            #         display_row.append('Z')
-            #     else:
-            #         display_row.append(element)
-            print(row_name[i] + ' ' + ' '.join(row))
 
     def place_battleship(self, battleship_size, row, column, direction):
         if direction == 'vertical':
@@ -87,10 +73,7 @@ class Board:
             return 2
         elif self.board[row_name[row]][column_name[column]] == 'Z':
             self.board[row_name[row]][column_name[column]] = 'X'
-            # up = self.check_up(row_name[row], column_name[column])
-            # down = self.check_down(row_name[row], column_name[column])
-            # left = self.check_left(row_name[row], column_name[column])
-            # right = self.check_right(row_name[row], column_name[column])
+
             up = self.is_sunk_battleship(row_name[row], column_name[column], -1, 0)
             down = self.is_sunk_battleship(row_name[row], column_name[column], 1, 0)
             left = self.is_sunk_battleship(row_name[row], column_name[column], 0, -1)
