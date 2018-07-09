@@ -2,7 +2,7 @@ class Board:
     def __init__(self):
         self.board = [['O' for col in range(10)] for row in range(10)]
 
-    def print_computer_board(self):
+    def print_computer_board(self):  # TODO: merge with print_user_board
         print('Computer Board')
         header = []
         for i in range(11):
@@ -87,53 +87,28 @@ class Board:
             return 2
         elif self.board[row_name[row]][column_name[column]] == 'Z':
             self.board[row_name[row]][column_name[column]] = 'X'
-            up = self.check_up(row_name[row], column_name[column])
-            down = self.check_down(row_name[row], column_name[column])
-            left = self.check_left(row_name[row], column_name[column])
-            right = self.check_right(row_name[row], column_name[column])
+            # up = self.check_up(row_name[row], column_name[column])
+            # down = self.check_down(row_name[row], column_name[column])
+            # left = self.check_left(row_name[row], column_name[column])
+            # right = self.check_right(row_name[row], column_name[column])
+            up = self.is_sunk_battleship(row_name[row], column_name[column], -1, 0)
+            down = self.is_sunk_battleship(row_name[row], column_name[column], 1, 0)
+            left = self.is_sunk_battleship(row_name[row], column_name[column], 0, -1)
+            right = self.is_sunk_battleship(row_name[row], column_name[column], 0, 1)
             if up and down and left and right:
-                # self.sunk_battleship_by_user_counter += 1
-                # if self.sunk_battleship_by_user_counter == 7:
-                #     print('You win!!!')
-                #     self.print_computer_board()
-                #     print('GAME OVER')
-                #     return 5
-                # elif self.sunk_battleship_by_computer_counter == 7:
-                #     print('Computer wins!!!')
-                #     self.print_user_board()
-                #     print('GAME OVER')
-                #     return 5
                 return 4
             return 3
 
-    def check_up(self, row, column):
-        if row == 0 or self.board[row - 1][column] == 'O' or self.board[row - 1][column] == '-':
+    def is_sunk_battleship(self, row, column, row_shift, column_shift):
+        if (row_shift == -1 and column_shift == 0 and row == 0) \
+                or (row_shift == 1 and column_shift == 0 and row == 9) \
+                or (row_shift == 0 and column_shift == -1 and column == 0) \
+                or (row_shift == 0 and column_shift == 1 and column == 9):
+            return True  # edge of board
+        elif self.board[row + row_shift][column + column_shift] == 'O' \
+                or self.board[row + row_shift][column + column_shift] == '-':
             return True
-        elif self.board[row - 1][column] == 'Z':
+        elif self.board[row + row_shift][column + column_shift] == 'Z':
             return False
-        elif self.board[row - 1][column] == 'X':
-            return self.check_up(row - 1, column)
-
-    def check_down(self, row, column):
-        if row == 9 or self.board[row + 1][column] == 'O' or self.board[row + 1][column] == '-':
-            return True
-        elif self.board[row + 1][column] == 'Z':
-            return False
-        elif self.board[row + 1][column] == 'X':
-            return self.check_down(row + 1, column)
-
-    def check_left(self, row, column):
-        if column == 0 or self.board[row][column - 1] == 'O' or self.board[row][column - 1] == '-':
-            return True
-        elif self.board[row][column - 1] == 'Z':
-            return False
-        elif self.board[row][column - 1] == 'X':
-            return self.check_left(row, column - 1)
-
-    def check_right(self, row, column):
-        if column == 9 or self.board[row][column + 1] == 'O' or self.board[row][column + 1] == '-':
-            return True
-        elif self.board[row][column + 1] == 'Z':
-            return False
-        elif self.board[row][column + 1] == 'X':
-            return self.check_right(row, column + 1)
+        elif self.board[row + row_shift][column + column_shift] == 'X':
+            return self.is_sunk_battleship((row + row_shift), (column + column_shift), row_shift, column_shift)
