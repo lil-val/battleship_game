@@ -81,7 +81,8 @@ class Game:
             self.user_turn()
             if not self.win:
                 self.computer_turn()
-                self.user_board.print_user_board()
+                if not self.win:
+                    self.user_board.print_user_board()
 
     def user_turn(self):
         turn_ended = False
@@ -127,7 +128,7 @@ class Game:
     def computer_turn(self):
         turn_ended = False
         while not turn_ended:
-            print(self.optional_guesses)  # to delete
+            # print(self.optional_guesses)  # to delete
             guess_direction = 'N'
             if len(self.waiting_list) == 0:
                 guess_row = random.choice(list(self.optional_guesses.keys()))
@@ -141,20 +142,28 @@ class Game:
             self.optional_guesses[guess_row].remove(guess_column)
             if len(self.optional_guesses[guess_row]) == 0:
                 del self.optional_guesses[guess_row]
+            print(self.optional_guesses)  # to delete
             if guess_result == 1:  # You already took that shot
                 continue
             elif guess_result == 2:  # missed
                 turn_ended = True
             elif guess_result == 3:  # hit
                 self.current_battleship.append([guess_row, guess_column])
-                if guess_column != 1 and guess_direction != 'V':
-                    self.waiting_list.append([guess_row, guess_column - 1, 'H'])  # check if value in optional list before append (for all 4 options)
-                if guess_column != 10 and guess_direction != 'V':
-                    self.waiting_list.append([guess_row, guess_column + 1, 'H'])
-                if guess_row != 'A' and guess_direction != 'H':
-                    self.waiting_list.append([chr(ord(guess_row) - 1), guess_column, 'V'])
-                if guess_row != 'J' and guess_direction != 'H':
-                    self.waiting_list.append([chr(ord(guess_row) + 1), guess_column, 'V'])
+                if guess_row in self.optional_guesses and (guess_column - 1) in self.optional_guesses[guess_row]:
+                    if guess_column != 1 and guess_direction != 'V':
+                        self.waiting_list.append([guess_row, guess_column - 1, 'H'])
+                if guess_row in self.optional_guesses and (guess_column + 1) in self.optional_guesses[guess_row]:
+                    if guess_column != 10 and guess_direction != 'V':
+                        self.waiting_list.append([guess_row, guess_column + 1, 'H'])
+                if chr(ord(guess_row) - 1) in self.optional_guesses and \
+                        guess_column in self.optional_guesses[chr(ord(guess_row) - 1)]:
+                    if guess_row != 'A' and guess_direction != 'H':
+                        self.waiting_list.append([chr(ord(guess_row) - 1), guess_column, 'V'])
+                if chr(ord(guess_row) + 1) in self.optional_guesses and \
+                        guess_column in self.optional_guesses[chr(ord(guess_row) + 1)]:
+                    if guess_row != 'J' and guess_direction != 'H':
+                        self.waiting_list.append([chr(ord(guess_row) + 1), guess_column, 'V'])
+                print(self.waiting_list)  # to delete
             elif guess_result == 4:  # sunk battleship
                 self.sunk_battleship_by_computer_counter += 1
                 if self.sunk_battleship_by_computer_counter == 7:

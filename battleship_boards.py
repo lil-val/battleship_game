@@ -1,8 +1,6 @@
 class Board:
     def __init__(self):
         self.board = [['O' for col in range(10)] for row in range(10)]
-        # self.sunk_battleship_by_user_counter = 0
-        # self.sunk_battleship_by_computer_counter = 0
 
     def print_computer_board(self):
         print('Computer Board')
