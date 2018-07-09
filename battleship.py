@@ -115,7 +115,7 @@ class Game:
                 self.sunk_battleship_by_user_counter += 1
                 if self.sunk_battleship_by_user_counter == 7:
                     self.computer_board.print_computer_board()
-                    print('You win!!!')
+                    self.you_win()
                     turn_ended = True
                     self.win = True
                 else:
@@ -125,7 +125,6 @@ class Game:
     def computer_turn(self):
         turn_ended = False
         while not turn_ended:
-            # print(self.optional_guesses)  # to delete
             guess_direction = 'N'
             if len(self.waiting_list) == 0:
                 guess_row = random.choice(list(self.optional_guesses.keys()))
@@ -139,7 +138,6 @@ class Game:
             self.optional_guesses[guess_row].remove(guess_column)
             if len(self.optional_guesses[guess_row]) == 0:
                 del self.optional_guesses[guess_row]
-            print(self.optional_guesses)  # to delete
             if guess_result == 1:  # You already took that shot
                 continue
             elif guess_result == 2:  # missed
@@ -160,19 +158,19 @@ class Game:
                         guess_column in self.optional_guesses[chr(ord(guess_row) + 1)]:
                     if guess_row != 'J' and guess_direction != 'H':
                         self.waiting_list.append([chr(ord(guess_row) + 1), guess_column, 'V'])
-                print(self.waiting_list)  # to delete
             elif guess_result == 4:  # sunk battleship
                 self.current_battleship.append([guess_row, guess_column])
                 self.sunk_battleship_by_computer_counter += 1
                 if self.sunk_battleship_by_computer_counter == 7:
                     self.user_board.print_user_board()
-                    print('Computer win!!!')
+                    self.computer_win()
                     turn_ended = True
                     self.win = True
-                self.waiting_list = []
-                for position in self.current_battleship:
-                    self.surrounding_waters(position[0], position[1])
-                self.current_battleship = []
+                else:
+                    self.waiting_list = []
+                    for position in self.current_battleship:
+                        self.surrounding_waters(position[0], position[1])
+                    self.current_battleship = []
 
     def surrounding_waters(self, row, column):
         rows_to_check = [chr(ord(row) - 1), chr(ord(row)), chr(ord(row) + 1)]
@@ -186,6 +184,24 @@ class Game:
                     self.optional_guesses[row_to_check].remove(column + 1)
                 if len(self.optional_guesses[row_to_check]) == 0:
                     del self.optional_guesses[row_to_check]
+
+    def you_win(self):
+        print("__     __          __          ___       _ _ _ ")
+        print("\ \   / /          \ \        / (_)     | | | |")
+        print(" \ \_/ /__  _   _   \ \  /\  / / _ _ __ | | | |")
+        print("  \   / _ \| | | |   \ \/  \/ / | | '_ \| | | |")
+        print("   | | (_) | |_| |    \  /\  /  | | | | |_|_|_|")
+        print("   |_|\___/ \__,_|     \/  \/   |_|_| |_(_|_|_)")
+
+    def computer_win(self):
+        print("  _____                            _             __          ___       _ _ _ ")
+        print(" / ____|                          | |            \ \        / (_)     | | | |")
+        print("| |     ___  _ __ ___  _ __  _   _| |_ ___ _ __   \ \  /\  / / _ _ __ | | | |")
+        print("| |    / _ \| '_ ` _ \| '_ \| | | | __/ _ \ '__|   \ \/  \/ / | | '_ \| | | |")
+        print("| |___| (_) | | | | | | |_) | |_| | ||  __/ |       \  /\  /  | | | | |_|_|_|")
+        print(" \_____\___/|_| |_| |_| .__/ \__,_|\__\___|_|        \/  \/   |_|_| |_(_|_|_)")
+        print("                      | |                                                    ")
+        print("                      |_|                                                    ")
 
 
 if __name__ == '__main__':
