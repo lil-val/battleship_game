@@ -1,8 +1,18 @@
 class Board:
+    """
+    Represent the board.
+    Contains data of battleships locations, hits and misses.
+    Enables battleships placing and guessing.
+    """
     def __init__(self):
+        """Create an empty board"""
         self.board = [['O' for col in range(10)] for row in range(10)]
 
     def print_board(self, user):
+        """
+        Prints to console the current status of the game board.
+        :param user: boolean, True = user board (battleships displayed) and False = computer board (battleships hidden)
+        """
         if user:
             print('User Board')
         else:
@@ -23,6 +33,14 @@ class Board:
             print(row_name[i] + ' ' + ' '.join(display_row))
 
     def place_battleship(self, battleship_size, row, column, direction):
+        """
+        Check if battleship can be placed in the given position and place it if possible.
+        :param battleship_size: int which represent the battleship size
+        :param row: int from 0 to 9 which represent the row to place the battleship
+        :param column: int from 0 to 9 which represent the column to place the battleship
+        :param direction: str 'vertical' or 'horizontal' which represent the required direction
+        :return: True if battleship was placed or False if not
+        """
         if direction == 'vertical':
             current_row = row
             for i in range(battleship_size):
@@ -63,6 +81,12 @@ class Board:
             return True
 
     def guess(self, row, column):
+        """
+        Check the received input from user or computer against the board
+        :param row: str which present the row to check if battleship is placed
+        :param column: int which present the column to check if battleship is placed
+        :return: 1 - already guessed this position, 2 - miss, 3 - hit, 4 - battleship sunk
+        """
         row_name = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
         column_name = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9}
         if self.board[row_name[row]][column_name[column]] == '-' or \
@@ -83,6 +107,14 @@ class Board:
             return 3
 
     def is_sunk_battleship(self, row, column, row_shift, column_shift):
+        """
+        Check if the whole battleship was hit by user or computer
+        :param row: int from 0 to 9 which represent the row to place the battleship
+        :param column: int from 0 to 9 which represent the column to place the battleship
+        :param row_shift: int 0 / 1 / -1 - shift of row to be checked
+        :param column_shift: int 0 / 1 / -1 - shift of column to be checked
+        :return: True if yes, False if not
+        """
         if (row_shift == -1 and column_shift == 0 and row == 0) \
                 or (row_shift == 1 and column_shift == 0 and row == 9) \
                 or (row_shift == 0 and column_shift == -1 and column == 0) \

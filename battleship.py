@@ -3,6 +3,10 @@ from battleship_boards import Board
 
 
 class Game:
+    """
+    Manages and represents the battleship game.
+    Receive instructions from the user and computer and execute at the boards.
+    """
     def __init__(self):
         self.computer_board = Board()
         self.user_board = Board()
@@ -26,6 +30,10 @@ class Game:
         self.sunk_battleship_by_computer_counter = 0
 
     def allocate_computer_battleships(self):
+        """
+        Random allocation of battleships by computer.
+        Each allocation is checked to verify if it contains the required free space before placing the battleship.
+        """
         for battleship_size in self.battleships_size:
             result = False
             while not result:
@@ -35,6 +43,11 @@ class Game:
                 result = self.computer_board.place_battleship(battleship_size, row, column, direction)
 
     def allocate_user_battleships(self):
+        """
+        Allocation of battleships by user.
+        The user provides row, column and direction in order to allocate a battleships.
+        Each allocation is checked to verify if it contains the required free space before placing the battleship.
+        """
         print("******* Locate you battleships *******")
         for battleship_size in self.battleships_size:
             print('Select position for {} size battleship'.format(battleship_size))
@@ -86,6 +99,10 @@ class Game:
                     self.user_board.print_board(True)
 
     def user_turn(self):
+        """
+        User tries to hit computer battleships by guessing row and column.
+        Checks if user wins and if the user turn has ended.
+        """
         turn_ended = False
         while not turn_ended:
             guess_row = ''
@@ -124,6 +141,12 @@ class Game:
                     self.computer_board.print_board(False)
 
     def computer_turn(self):
+        """
+        Computer tries to hit user battleships by randomly guessing row and column.
+        If a 'hit' was observed the next guess will be selected from pre-defined list of adjacent allocations.
+        Updates dictionary of optional row and column for next guess.
+        Checks if computer wins and if the computer turn has ended.
+        """
         turn_ended = False
         while not turn_ended:
             guess_direction = 'N'
@@ -139,11 +162,11 @@ class Game:
             self.optional_guesses[guess_row].remove(guess_column)
             if len(self.optional_guesses[guess_row]) == 0:
                 del self.optional_guesses[guess_row]
-            if guess_result == 1:  # You already took that shot
+            if guess_result == 1:  # computer already took that shot
                 continue
-            elif guess_result == 2:  # missed
+            elif guess_result == 2:  # computer missed
                 turn_ended = True
-            elif guess_result == 3:  # hit
+            elif guess_result == 3:  # computer hit
                 self.current_battleship.append([guess_row, guess_column])
                 if guess_row in self.optional_guesses and (guess_column - 1) in self.optional_guesses[guess_row]:
                     if guess_column != 1 and guess_direction != 'V':
@@ -159,7 +182,7 @@ class Game:
                         guess_column in self.optional_guesses[chr(ord(guess_row) + 1)]:
                     if guess_row != 'J' and guess_direction != 'H':
                         self.waiting_list.append([chr(ord(guess_row) + 1), guess_column, 'V'])
-            elif guess_result == 4:  # sunk battleship
+            elif guess_result == 4:  # computer sunk battleship
                 self.current_battleship.append([guess_row, guess_column])
                 self.sunk_battleship_by_computer_counter += 1
                 if self.sunk_battleship_by_computer_counter == 7:
@@ -174,6 +197,12 @@ class Game:
                     self.current_battleship = []
 
     def surrounding_waters(self, row, column):
+        """
+        After computer sunk a user battleship, omit all surrounding positions from the dictionary
+        of optional row and column for next computer guesses.
+        :param row: str which represents the row in which the battleship is placed
+        :param column: int which represent the column in which the battleship is placed
+        """
         rows_to_check = [chr(ord(row) - 1), chr(ord(row)), chr(ord(row) + 1)]
         for row_to_check in rows_to_check:
             if row_to_check in self.optional_guesses:
