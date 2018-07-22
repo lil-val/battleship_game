@@ -1,6 +1,8 @@
 import random
 from battleship_boards import Board
 
+row_letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+
 
 class Game:
     """
@@ -37,8 +39,8 @@ class Game:
         for battleship_size in self.battleships_size:
             result = False
             while not result:
-                row = random.randint(0, 9)
-                column = random.randint(0, 9)
+                row = chr(random.randint(ord('A'), ord('J')))
+                column = random.randint(1, 10)
                 direction = random.choice(['vertical', 'horizontal'])
                 result = self.computer_board.place_battleship(battleship_size, row, column, direction)
 
@@ -55,12 +57,10 @@ class Game:
             while not result:
                 self.user_board.print_board(True)
                 row = ''
-                while row == '' or row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
+                while row == '' or row not in row_letters:
                     row = input('Enter row: ').upper()
-                    if row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
+                    if row not in row_letters:
                         print("Please make sure to use letter between A to J")
-                rows = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
-                row_name = rows[row]
 
                 column = 11
                 while column > 10:
@@ -72,8 +72,6 @@ class Game:
                     except ValueError:
                         print("Please make sure to enter a digit!")
                         column = 11
-                columns = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9}
-                column_name = columns[column]
 
                 instruction = ''
                 while instruction == '' or instruction not in ['H', 'V']:
@@ -84,7 +82,7 @@ class Game:
                         direction = 'horizontal'
                     elif instruction == 'V':
                         direction = 'vertical'
-                result = self.user_board.place_battleship(battleship_size, row_name, column_name, direction)
+                result = self.user_board.place_battleship(battleship_size, row, column, direction)
                 if not result:
                     print('This battleship cannot be placed here, try a different location')
 
@@ -106,9 +104,9 @@ class Game:
         turn_ended = False
         while not turn_ended:
             guess_row = ''
-            while guess_row == '' or guess_row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
+            while guess_row == '' or guess_row not in row_letters:
                 guess_row = input('Guess row: ').upper()
-                if guess_row not in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
+                if guess_row not in row_letters:
                     print("Please make sure to use letter between A to J")
             guess_column = 11
             while guess_column > 10:

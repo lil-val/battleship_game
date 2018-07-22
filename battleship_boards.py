@@ -57,51 +57,52 @@ class Board:
         """
         Check if battleship can be placed in the given position and place it if possible.
         :param battleship_size: int which represent the battleship size
-        :param row: int from 0 to 9 which represent the row to place the battleship
-        :param column: int from 0 to 9 which represent the column to place the battleship
+        :param row: str which present the row to check if battleship is placed
+        :param column: int which present the column to check if battleship is placed
         :param direction: str 'vertical' or 'horizontal' which represent the required direction
         :return: True if battleship was placed or False if not
         """
+        converted_row, converted_column = self.convert_position(row, column)
         if direction == 'vertical':
-            current_row = row
+            current_row = converted_row
             for i in range(battleship_size):
-                if current_row < 10 and self.find_battleship(current_row, column) == 'O' \
-                        and (column == 0 or self.find_battleship(current_row, column - 1) == 'O')\
-                        and (column == 9 or self.find_battleship(current_row, column + 1) == 'O')\
-                        and (current_row == 0 or self.find_battleship(current_row - 1, column) == 'O') \
-                        and (current_row == 0 or column == 0 or self.find_battleship(current_row - 1, column - 1) == 'O') \
-                        and (current_row == 0 or column == 9 or self.find_battleship(current_row - 1, column + 1) == 'O') \
-                        and (current_row == 9 or self.find_battleship(current_row + 1, column) == 'O') \
-                        and (current_row == 9 or column == 0 or self.find_battleship(current_row + 1, column - 1) == 'O') \
-                        and (current_row == 9 or column == 9 or self.find_battleship(current_row + 1, column + 1) == 'O'):
+                if current_row < 10 and self.find_battleship(current_row, converted_column) == 'O' \
+                        and (converted_column == 0 or self.find_battleship(current_row, converted_column - 1) == 'O')\
+                        and (converted_column == 9 or self.find_battleship(current_row, converted_column + 1) == 'O')\
+                        and (current_row == 0 or self.find_battleship(current_row - 1, converted_column) == 'O') \
+                        and (current_row == 0 or converted_column == 0 or self.find_battleship(current_row - 1, converted_column - 1) == 'O') \
+                        and (current_row == 0 or converted_column == 9 or self.find_battleship(current_row - 1, converted_column + 1) == 'O') \
+                        and (current_row == 9 or self.find_battleship(current_row + 1, converted_column) == 'O') \
+                        and (current_row == 9 or converted_column == 0 or self.find_battleship(current_row + 1, converted_column - 1) == 'O') \
+                        and (current_row == 9 or converted_column == 9 or self.find_battleship(current_row + 1, converted_column + 1) == 'O'):
                     current_row += 1
                 else:
                     return False
             positions = []
             for i in range(battleship_size):
-                positions.append(str(row) + str(column))
-                row += 1
+                positions.append(str(converted_row) + str(converted_column))
+                converted_row += 1
             self.battleships.append(Battleship(positions))
             return True
         if direction == 'horizontal':
-            current_column = column
+            current_column = converted_column
             for i in range(battleship_size):
-                if current_column < 10 and self.find_battleship(row, current_column) == 'O' \
-                        and (row == 0 or self.find_battleship(row - 1, current_column) == 'O') \
-                        and (row == 9 or self.find_battleship(row + 1, current_column) == 'O') \
-                        and (current_column == 0 or self.find_battleship(row, current_column - 1) == 'O') \
-                        and (current_column == 0 or row == 0 or self.find_battleship(row - 1, current_column - 1) == 'O') \
-                        and (current_column == 0 or row == 9 or self.find_battleship(row + 1, current_column - 1) == 'O') \
-                        and (current_column == 9 or self.find_battleship(row, current_column + 1) == 'O') \
-                        and (current_column == 9 or row == 0 or self.find_battleship(row - 1, current_column + 1) == 'O') \
-                        and (current_column == 9 or row == 9 or self.find_battleship(row + 1, current_column + 1) == 'O'):
+                if current_column < 10 and self.find_battleship(converted_row, current_column) == 'O' \
+                        and (converted_row == 0 or self.find_battleship(converted_row - 1, current_column) == 'O') \
+                        and (converted_row == 9 or self.find_battleship(converted_row + 1, current_column) == 'O') \
+                        and (current_column == 0 or self.find_battleship(converted_row, current_column - 1) == 'O') \
+                        and (current_column == 0 or converted_row == 0 or self.find_battleship(converted_row - 1, current_column - 1) == 'O') \
+                        and (current_column == 0 or converted_row == 9 or self.find_battleship(converted_row + 1, current_column - 1) == 'O') \
+                        and (current_column == 9 or self.find_battleship(converted_row, current_column + 1) == 'O') \
+                        and (current_column == 9 or converted_row == 0 or self.find_battleship(converted_row - 1, current_column + 1) == 'O') \
+                        and (current_column == 9 or converted_row == 9 or self.find_battleship(converted_row + 1, current_column + 1) == 'O'):
                     current_column += 1
                 else:
                     return False
             positions = []
             for i in range(battleship_size):
-                positions.append(str(row) + str(column))
-                column += 1
+                positions.append(str(converted_row) + str(converted_column))
+                converted_column += 1
             self.battleships.append(Battleship(positions))
             return True
 
@@ -112,11 +113,10 @@ class Board:
         :param column: int which present the column to check if battleship is placed
         :return: 1 - already guessed this position, 2 - miss, 3 - hit, 4 - battleship sunk
         """
-        row_name = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
-        column_name = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9}
-        position = str(row_name[row]) + str(column_name[column])
-        if self.board[row_name[row]][column_name[column]] == '-' or \
-                self.find_battleship(row_name[row], column_name[column]) == 'X':
+        converted_row, converted_column = self.convert_position(row, column)
+        position = str(converted_row) + str(converted_column)
+        if self.board[converted_row][converted_column] == '-' or \
+                self.find_battleship(converted_row, converted_column) == 'X':
             return 1
         for battleship in self.battleships:
             hit_result = battleship.hit(position)
@@ -125,5 +125,10 @@ class Board:
                     return 4
                 else:
                     return 3
-        self.board[row_name[row]][column_name[column]] = '-'
+        self.board[converted_row][converted_column] = '-'
         return 2
+
+    def convert_position(self, row, column):
+        row_name = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
+        column_name = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9}
+        return row_name[row], column_name[column]
