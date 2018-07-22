@@ -21,19 +21,19 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(self.board.find_battleship(0, 0), 'X')
 
     def test_place_battleship_vertical_can_be_placed(self):
-        self.assertEqual(self.board.place_battleship(2, 'A', 8, 'vertical'), True)
+        self.assertTrue(self.board.place_battleship(2, 'A', 8, 'vertical'))
 
     def test_place_battleship_vertical_cannot_be_placed(self):
-        self.assertEqual(self.board.place_battleship(2, 'A', 2, 'vertical'), False)
+        self.assertFalse(self.board.place_battleship(2, 'A', 2, 'vertical'))
 
     def test_place_battleship_horizontal_can_be_placed(self):
-        self.assertEqual(self.board.place_battleship(2, 'H', 6, 'horizontal'), True)
+        self.assertTrue(self.board.place_battleship(2, 'H', 6, 'horizontal'))
 
     def test_place_battleship_horizontal_cannot_be_placed(self):
-        self.assertEqual(self.board.place_battleship(2, 'F', 2, 'horizontal'), False)
+        self.assertFalse(self.board.place_battleship(2, 'F', 2, 'horizontal'))
 
     def test_place_battleship_horizontal_on_edge(self):
-        self.assertEqual(self.board.place_battleship(2, 'I', 10, 'horizontal'), False)
+        self.assertFalse(self.board.place_battleship(2, 'I', 10, 'horizontal'))
 
     def test_guess_already_guess_and_miss(self):
         self.board.guess('A', 2)

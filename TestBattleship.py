@@ -22,18 +22,18 @@ class TestBattleship(unittest.TestCase):
         self.assertEqual(self.battleship.contains('04'), 'O')
 
     def test_hit_if_miss(self):
-        self.assertEqual(self.battleship.hit('07'), False)
+        self.assertFalse(self.battleship.hit('07'))
 
     def test_hit_if_hit(self):
-        self.assertEqual(self.battleship.hit('01'), True)
+        self.assertTrue(self.battleship.hit('01'))
 
     def test_hit_twice(self):
         self.battleship.hit('01')
-        self.assertEqual(self.battleship.hit('01'), False)
+        self.assertFalse(self.battleship.hit('01'))
 
     def test_hit_if_not_sunk(self):
         self.battleship.hit('01')
-        self.assertEqual(self.battleship.is_sunk, False)
+        self.assertFalse(self.battleship.is_sunk)
 
     def test_hit_if_sunk(self):
         self.battleship.hit('01')
