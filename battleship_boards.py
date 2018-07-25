@@ -57,8 +57,8 @@ class Board:
         """
         Check if battleship can be placed in the given position and place it if possible.
         :param battleship_size: int which represent the battleship size
-        :param row: str which present the row to check if battleship is placed
-        :param column: int which present the column to check if battleship is placed
+        :param row: str which represent the row to check if battleship is placed
+        :param column: int which represent the column to check if battleship is placed
         :param direction: str 'vertical' or 'horizontal' which represent the required direction
         :return: True if battleship was placed or False if not
         """
@@ -109,8 +109,8 @@ class Board:
     def guess(self, row, column):
         """
         Check the received input from user or computer against the board
-        :param row: str which present the row to check if battleship is placed
-        :param column: int which present the column to check if battleship is placed
+        :param row: str which represent the row to check if battleship is placed
+        :param column: int which represent the column to check if battleship is placed
         :return: 1 - already guessed this position, 2 - miss, 3 - hit, 4 - battleship sunk
         """
         converted_row, converted_column = self.convert_position(row, column)
