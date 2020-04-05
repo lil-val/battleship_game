@@ -74,6 +74,8 @@ class Game:
                         column = 11
 
                 instruction = ''
+                if battleship_size == 1:
+                    instruction = 'H'
                 while instruction == '' or instruction not in ['H', 'V']:
                     instruction = input('Enter direction v (vertical) or h (horizontal): ').upper()
                     if instruction not in ['H', 'V']:
