@@ -22,7 +22,7 @@ class Board:
         """
         position = str(row) + str(column)
         for battleship in self.battleships:
-            battleship_status = battleship.contains(position)
+            battleship_status = battleship.is_contained(position)
             if battleship_status != 'O':
                 return battleship_status
         return 'O'

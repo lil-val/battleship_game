@@ -11,7 +11,7 @@ class Battleship:
         self.hit_positions = []
         self.is_sunk = False
 
-    def contains(self, position):
+    def is_contained(self, position):
         """
         checks if the battleship is located at that position
         :param position: a position to be checked, string of row and column e.g. '34'

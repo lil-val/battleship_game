@@ -8,18 +8,18 @@ class TestBattleship(unittest.TestCase):
         self.battleship = Battleship(['00', '01', '02', '03'])
 
     def test_contains_Z_before(self):
-        self.assertEqual(self.battleship.contains('00'), 'Z')
+        self.assertEqual(self.battleship.is_contained('00'), 'Z')
 
     def test_contains_X_after(self):
         self.battleship.hit('00')
-        self.assertEqual(self.battleship.contains('00'), 'X')
+        self.assertEqual(self.battleship.is_contained('00'), 'X')
 
     def test_contains_O_before(self):
-        self.assertEqual(self.battleship.contains('04'), 'O')
+        self.assertEqual(self.battleship.is_contained('04'), 'O')
 
     def test_contains_O_after(self):
         self.battleship.hit('04')
-        self.assertEqual(self.battleship.contains('04'), 'O')
+        self.assertEqual(self.battleship.is_contained('04'), 'O')
 
     def test_hit_if_miss(self):
         self.assertFalse(self.battleship.hit('07'))
