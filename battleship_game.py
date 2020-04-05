@@ -50,7 +50,7 @@ class Game:
         The user provides row, column and direction in order to allocate a battleships.
         Each allocation is checked to verify if it contains the required free space before placing the battleship.
         """
-        print("******* Locate you battleships *******")
+        print("******* Locate your battleships *******")
         for battleship_size in self.battleships_size:
             print('Select position for {} size battleship'.format(battleship_size))
             result = False
@@ -65,7 +65,7 @@ class Game:
                 column = 11
                 while column > 10:
                     try:
-                        column = int(input('Guess column: '))
+                        column = int(input('Enter column: '))
                         if column > 10 or column < 1:
                             print("Please make sure to use a digit between 1 to 10")
                             column = 11
